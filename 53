@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>貫坊首席 | 團隊工作日誌</title>
+    <style>
+        /* 定義黑白灰高級感與圓潤感變數 */
+        :root {
+            --bg-color: #fcfcfc;    /* 極淡灰色背景 */
+            --card-bg: #ffffff;    /* 純白卡片 */
+            --text-main: #222222;  /* 近黑深灰 */
+            --text-sub: #999999;   /* 淺灰文字 */
+            --accent: #000000;      /* 純黑強調 */
+            --border-light: #f0f0f0; /* 極淡灰色線條 */
+            --shadow-subtle: 0 10px 40px rgba(0,0,0,0.04); /* 優雅極淡陰影 */
+            --radius-lg: 16px;     /* 大圓角（卡片） */
+            --radius-md: 12px;     /* 中圓角（按鈕、輸入框） */
+        }
+
+        body {
+            font-family: "Noto Sans TC", "PingFang TC", sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-subtle);
+            box-sizing: border-box;
+            border: 1px solid #f9f9f9;
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 3px;
+            margin-bottom: 35px;
+            margin-top: 0;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        /* 標題下方裝飾線 */
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+
+        label {
+            display: block;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-sub);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        /* 統一輸入框樣式 - 大圓角 */
+        select, input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #eee;
+            border-radius: var(--radius-md);
+            background-color: #fff;
+            color: var(--text-main);
+            font-size: 16px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease;
+            appearance: none;
+        }
+
+        /* 自定義 select 下拉圖示 */
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23999999' d='M10.293 3.293 6 7.586 1.707 3.293A1 1 0 0 0 .293 4.707l5 5a1 1 0 0 0 1.414 0l5-5a1 1 0 1 0-1.414-1.414Z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        select:focus, input[type="text"]:focus, input[type="date"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.03);
+        }
+
+        /* 按鈕樣式 */
+        button {
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 15px;
+            letter-spacing: 1px;
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            outline: none;
+        }
+
+        /* 新增按鈕 */
+        .btn-add {
+            background-color: #f7f7f7;
+            color: var(--accent);
+            padding: 14px 28px;
+            white-space: nowrap;
+        }
+
+        .btn-add:hover {
+            background-color: var(--accent);
+            color: var(--card-bg);
+            transform: translateY(-1px);
+        }
+
+        /* 列表展示區 */
+        .list-box {
+            background-color: #fbfbfb;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            min-height: 30px;
+            font-size: 14px;
+            line-height: 1.8;
+            border: 1px solid var(--border-light);
+        }
+
+        /* 新增項目動畫 */
+        @keyframes fadeInSlide {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 待辦事項樣式 */
+        .todo-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 10px;
+            border-bottom: 1px solid #f2f2f2;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background 0.2s;
+            animation: fadeInSlide 0.4s ease;
+        }
+        
+        .todo-item:hover {
+            background-color: rgba(0,0,0,0.01);
+        }
+
+        .todo-item:last-child {
+            border-bottom: none;
+        }
+
+        /* 圓潤勾選框 */
+        .todo-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        /* 完成項目樣式 */
+        .todo-item.done span {
+            text-decoration: line-through;
+            color: var(--text-sub);
+            opacity: 0.5;
+        }
+
+        /* LINE 按鈕 */
+        .btn-line {
+            background-color: var(--accent);
+            color: var(--card-bg);
+            width: 100%;
+            padding: 18px;
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            margin-top: 35px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+
+        .btn-line:hover {
+            background-color: #222;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transform: translateY(-2px);
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>LKF工作日誌</h2>
+        
+        <label>日誌日期</label>
+        <input type="date" id="log-date">
+
+        <label>執行人員</label>
+        <select id="user">
+            <option value="小魚老師">小魚老師</option>
+            <option value="南南老師">南南老師</option>
+            <option value="貫坊首席">貫坊首席</option>
+        </select>
+
+        <label>今日工作紀錄</label>
+        <div class="flex-row">
+            <input type="text" id="work-input" placeholder="做了什麼？">
+            <button class="btn-add" onclick="addWork()">新增</button>
+        </div>
+        <div id="work-display" class="list-box">尚未輸入紀錄</div>
+
+        <label>待辦事項 (Checklist)</label>
+        <div class="flex-row">
+            <input type="text" id="todo-input" placeholder="待辦項目">
+            <button class="btn-add" onclick="addTodo()">新增</button>
+        </div>
+        <div id="todo-display" class="list-box">尚未輸入待辦</div>
+
+        <a href="#" class="btn-line" onclick="shareToLine()">總結並傳送至 LINE</a>
+    </div>
+
+<script>
+    let works = [];
+    let todos = [];
+
+    // 初始化日期：預設選擇今天
+    const now = new Date();
+    document.getElementById('log-date').valueAsDate = now;
+
+    function addWork() {
+        let val = document.getElementById('work-input').value;
+        if(val.trim() === "") return;
+        works.push(val.trim());
+        updateDisplay('work');
+        document.getElementById('work-input').value = '';
+    }
+
+    function addTodo() {
+        let val = document.getElementById('todo-input').value;
+        if(val.trim() === "") return;
+        todos.push({text: val.trim(), done: false});
+        updateDisplay('todo');
+        document.getElementById('todo-input').value = '';
+    }
+
+    function toggleTodo(i) {
+        todos[i].done = !todos[i].done;
+        updateDisplay('todo');
+    }
+
+    function updateDisplay(type) {
+        if (type === 'work' || !type) {
+            let workDisplay = document.getElementById('work-display');
+            if(works.length > 0) {
+                workDisplay.innerHTML = works.map(w => `<div style="animation: fadeInSlide 0.3s ease;">• ${w}</div>`).join('');
+            } else {
+                workDisplay.innerText = '尚未輸入紀錄';
+            }
+        }
+
+        if (type === 'todo' || !type) {
+            let todoDisplay = document.getElementById('todo-display');
+            if(todos.length > 0) {
+                let todoHtml = todos.map((t, i) => 
+                    `<div class="todo-item ${t.done ? 'done' : ''}" onclick="toggleTodo(${i})">
+                        <input type="checkbox" class="todo-checkbox" ${t.done ? 'checked' : ''}>
+                        <span>${t.text}</span>
+                    </div>`
+                ).join('');
+                todoDisplay.innerHTML = todoHtml;
+            } else {
+                todoDisplay.innerText = '尚未輸入待辦';
+            }
+        }
+    }
+
+    // 初始呼叫
+    updateDisplay();
+
+    function shareToLine() {
+        if(works.length === 0 && todos.length === 0) {
+            alert("請先輸入紀錄或待辦事項。");
+            return;
+        }
+
+        // 取得選擇的日期和人員
+        let logDate = document.getElementById('log-date').value;
+        if(!logDate) { alert("請選擇日期。"); return; }
+        
+        let user = document.getElementById('user').value;
+        let workText = works.join('\n• ');
+        let todoText = todos.map(t => (t.done?'✅':'⬜') + ' ' + t.text).join('\n');
+
+        // 格式化日期顯示在 LINE 上 (e.g., 4/9)
+        const dateObj = new Date(logDate);
+        const shortDate = `${dateObj.getMonth() + 1}/${dateObj.getDate()}`;
+
+        // 彙整訊息內容
+        let msg = `【LKF工作日誌】\n人員：${user}\n日期：${shortDate}\n\n📍 今日工作內容：\n• ${workText}\n\n📝 待辦執行進度：\n${todoText}`;
+
+        // 使用 LINE 分享網址協定 (GitHub 專用方案)
+        window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
+    }
+</script>
+</body>
+</html>
