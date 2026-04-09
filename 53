@@ -243,7 +243,7 @@
         const wMsg = db.works.map(w => `√ ${w.replace('[完成] ','')}`).join('\n');
         const tMsg = db.todos.map(t => `${t.done?'✅':'⬜'} ${t.text}`).join('\n');
 
-        const msg = `【LKF彩顏 | 工作彙報】\n人員：${staff}\n日期：${date}\n\n📍 工作內容：\n${wMsg}\n\n📝 待辦進度：\n${tMsg}`;
+        const msg = `⦿√【貫坊首席 | 工作彙報】\n人員：${staff}\n日期：${date}\n\n📍 工作內容：\n${wMsg}\n\n📝 待辦進度：\n${tMsg}`;
         window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
     }
 </script>
